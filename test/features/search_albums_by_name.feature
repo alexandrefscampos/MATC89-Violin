@@ -5,7 +5,7 @@ Feature: Buscar Álbuns por Nome
 
   Scenario: Successfully searching for an album by name
     Given I am logged into the application
-    When I enter the name of an album into the search bar
+    When I enter the name of an album or similar into the search bar
     And I submit the search
     Then I should see a list of albums matching the name I entered
     And each album in the results should display its cover art and name
