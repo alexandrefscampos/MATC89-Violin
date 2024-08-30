@@ -1,8 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/core/widgets/album_preview.dart';
+import 'package:violin/domain/search/search_result_model.dart';
 import 'package:violin/mocks/albums_mock.dart';
 import 'package:violin/mocks/user_mock.dart';
+import 'package:violin/pages/albums/albums_page.dart';
 import 'package:violin/pages/profile/widgets/user_statistics.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -17,7 +22,7 @@ class ProfilePage extends StatelessWidget {
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 60),
+              padding: EdgeInsets.only(bottom: 60),
               child: Image.network(
                 //TODO add baner feature
                 'https://www.univates.br/radio/media/noticias_responsivo/31049/-1645810170.8855_1440_900.jpg',
@@ -26,7 +31,7 @@ class ProfilePage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            const Positioned.fill(
+            Positioned.fill(
               child: Align(
                 alignment: Alignment(0, 0.8),
                 child: CircleAvatar(
@@ -37,18 +42,18 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
               Text(
                 userMock.name ?? 'User',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               // Row(///TODO create follow feature
               //   mainAxisAlignment: MainAxisAlignment.center,
               //   children: [
@@ -68,7 +73,7 @@ class ProfilePage extends StatelessWidget {
               //     ),
               //   ],
               // ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -94,8 +99,8 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              const Text(
+              SizedBox(height: 24),
+              Text(
                 'User favorite albums', //TODO create fav albums
                 style: TextStyle(
                   color: Colors.white,
@@ -103,22 +108,22 @@ class ProfilePage extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [...albumList.map((e) => AlbumPreview(path: e.path))],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
               InkWell(
                 onTap: () {
-                  //TODO navigate to albums page
+                  Navigator.of(context).pushNamed(AlbumsPage.routeName);
                 },
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Albums',
                           style: TextStyle(
                             color: Colors.white,
@@ -128,15 +133,15 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Text(
                           userMock.totalAlbums.length.toString(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),
                         )
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    const Divider(
+                    SizedBox(height: 8),
+                    Divider(
                       height: 1,
                       color: Colors.grey,
                     )
@@ -149,4 +154,26 @@ class ProfilePage extends StatelessWidget {
       ],
     );
   }
+}
+
+class UserModel {
+  String? name;
+  int followers;
+  int following;
+  int totalAlbumsThisYear;
+  int lists;
+  int reviews;
+  List<Results> favoriteAlbums;
+  List<Results> totalAlbums;
+
+  UserModel({
+    this.name,
+    this.followers = 0,
+    this.following = 0,
+    this.totalAlbumsThisYear = 0,
+    this.lists = 0,
+    this.reviews = 0,
+    this.totalAlbums = const [],
+    this.favoriteAlbums = const [],
+  });
 }

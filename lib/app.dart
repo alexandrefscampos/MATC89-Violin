@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:violin/pages/album_details/album_details_page.dart';
+import 'package:violin/pages/albums/albums_page.dart';
 import 'package:violin/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -13,6 +15,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       home: const HomePage(),
+      routes: {
+        AlbumsPage.routeName: (context) => const AlbumsPage(),
+        AlbumDetailsPage.routeName: (context) => const AlbumDetailsPage(),
+      },
     );
   }
 }
