@@ -1,13 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:violin/app/core/colors.dart';
-import 'package:violin/app/core/consts.dart';
-import 'package:violin/app/mocks/user_mock.dart';
-import 'package:violin/app/presentation/shared/widgets/album_preview.dart';
+import 'package:violin/core/colors.dart';
+import 'package:violin/core/consts.dart';
+import 'package:violin/core/widgets/album_preview.dart';
+import 'package:violin/mocks/user_mock.dart';
 
 class AlbumDetailsPage extends StatelessWidget {
   static const routeName = 'album_details';
@@ -35,8 +30,8 @@ class AlbumDetailsPage extends StatelessWidget {
                       path: album.artworkUrl100 ?? '',
                     ),
                     const SizedBox(height: 8),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         AlbumStatistic(
                           icon: Icons.remove_red_eye,
                           iconColor: Colors.green,
@@ -64,10 +59,10 @@ class AlbumDetailsPage extends StatelessWidget {
                       ),
                       onPressed: () {},
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(
+                        minimumSize: WidgetStateProperty.all(
                           const Size(160, 40),
                         ),
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                           VColors.secondary,
                         ),
                       ),
@@ -124,8 +119,8 @@ class AlbumDetailsPage extends StatelessWidget {
 
 class ReviewCard extends StatelessWidget {
   const ReviewCard({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -177,11 +172,11 @@ class AlbumStatistic extends StatelessWidget {
   final Color iconColor;
   final int value;
   const AlbumStatistic({
-    Key? key,
+    super.key,
     required this.icon,
     required this.iconColor,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

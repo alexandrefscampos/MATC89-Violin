@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:violin/core/api.dart';
-import 'package:violin/domain/search/search_result_model.dart';
 import 'package:violin/domain/search/search_repository.dart';
+import 'package:violin/domain/search/search_result_model.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -22,6 +22,8 @@ class SearchRepositoryImpl implements SearchRepository {
       );
       log(response.toString());
       return SearchResultModel.fromJson(jsonDecode(response.data));
-    } catch (_) {}
+    } catch (_) {
+      return null;
+    }
   }
 }
