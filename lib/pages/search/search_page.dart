@@ -1,6 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:violin/core/colors.dart';
 import 'package:violin/core/consts.dart';
 import 'package:violin/data/search_repository_impl.dart';
 import 'package:violin/domain/search/search_result_model.dart';
@@ -40,20 +38,20 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             TextField(
               controller: controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'What are you searching for?',
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextButton(
               onPressed: () async {
                 test = await searchService.search(controller.text);
 
                 setState(() {});
               },
-              child: Text('Search'),
+              child: const Text('Search'),
             ),
             if (test != null)
               ...?test?.results?.map(
@@ -67,18 +65,18 @@ class _SearchPageState extends State<SearchPage> {
                     child: Row(
                       children: [
                         Image.network(e.artworkUrl100 ?? ''),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Flexible(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 e.collectionName ?? '',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
                                 e.artistName ?? '',
                                 style: TextStyle(
@@ -110,23 +108,26 @@ class _SearchPageState extends State<SearchPage> {
         return Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text('You want to add this album?'),
+              const Text('You want to add this album?'),
               TextButton(
                 onPressed: () async {
-                  userMock.totalAlbums = [
-                    ...userMock.totalAlbums,
-                    result
-                  ]; //TODO DONT LET ADD MULTIPLE TIMES THE SAME ALBUM
+                  final map = <int?, Results>{};
+                  for (var e in userMock.totalAlbums) {
+                    map[e.collectionId] = e;
+                  }
+                  map[result.collectionId] = result;
+                  userMock.totalAlbums = map.values.toList();
                   Navigator.of(context).pop();
                 },
-                child: Text('Yes'),
+                child: const Text('Yes'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(color: Colors.red),
                 ),
@@ -146,11 +147,11 @@ class FilterChip extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   const FilterChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

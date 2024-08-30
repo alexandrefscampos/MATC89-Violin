@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/mocks/albums_mock.dart';
+import 'package:violin/mocks/user_mock.dart';
 import 'package:violin/pages/profile/profile_page.dart';
 import 'package:violin/pages/search/search_page.dart';
 
@@ -104,7 +105,7 @@ class HomeBody extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const Text(
-            'Popular this month',
+            'Your albums',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -120,20 +121,20 @@ class HomeBody extends StatelessWidget {
               ),
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: albumList.length,
+              itemCount: userMock.totalAlbums.length,
               itemBuilder: (BuildContext context, int index) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Card(
                     child: Image.network(
-                      albumList[index].path,
+                      userMock.totalAlbums[index].artworkUrl100 ?? '',
                       fit: BoxFit.contain,
                       height: 92,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    albumList[index].name!,
+                    userMock.totalAlbums[index].collectionName!,
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -141,20 +142,14 @@ class HomeBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Row(
-                    children: [
-                      CircleAvatar(),
-                      SizedBox(width: 4),
-                      Text(
-                        'Alejandro',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: VColors.secondary,
-                        ),
-                      ),
-                    ],
-                  )
+                  Text(
+                    userMock.totalAlbums[index].artistName ?? '',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: VColors.secondary,
+                    ),
+                  ),
                 ],
               ),
             ),
