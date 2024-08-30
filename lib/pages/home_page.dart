@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/pages/profile/profile_page.dart';
+import 'package:violin/pages/search/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,4 +48,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-final screenList = [Container(), Container(), const ProfilePage()];
+final screenList = [Container(), const SearchPage(), const ProfilePage()];
