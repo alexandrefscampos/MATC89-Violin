@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/core/widgets/album_preview.dart';
 import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/mocks/albums_mock.dart';
 import 'package:violin/mocks/user_mock.dart';
 import 'package:violin/pages/albums/albums_page.dart';
 import 'package:violin/pages/profile/widgets/user_statistics.dart';
@@ -111,7 +110,11 @@ class ProfilePage extends StatelessWidget {
               SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [...albumList.map((e) => AlbumPreview(path: e.path))],
+                children: [
+                  ...userMock.totalAlbums
+                      .take(3)
+                      .map((e) => AlbumPreview(path: e.artworkUrl100 ?? '')),
+                ],
               ),
               SizedBox(height: 32),
               InkWell(
@@ -124,7 +127,7 @@ class ProfilePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Albums',
+                          'All favorite albums',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
