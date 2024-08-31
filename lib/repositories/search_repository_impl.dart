@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:violin/core/api.dart';
 import 'package:violin/models/search_result_model.dart';
-import 'package:violin/repositories/search_repository.dart';
 
-class SearchRepositoryImpl implements SearchRepository {
-  final dio = Dio(BaseOptions(baseUrl: baseUrl));
+part 'search_repository_impl.g.dart';
 
-  @override
+class SearchRepositoryImpl {
+  final Dio dio;
+  const SearchRepositoryImpl(this.dio);
+
   Future<SearchResultModel?> search(String term) async {
     try {
       final response = await dio.get(
@@ -26,4 +28,11 @@ class SearchRepositoryImpl implements SearchRepository {
       return null;
     }
   }
+}
+
+@riverpod
+SearchRepositoryImpl searchRepository(SearchRepositoryRef ref) {
+  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+
+  return SearchRepositoryImpl(dio);
 }

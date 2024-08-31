@@ -1,20 +1,20 @@
 import 'dart:convert';
 
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:violin/models/user_model.dart';
-import 'package:violin/repositories/user_repository.dart';
 
-class UserRepositoryImpl implements UserRepository {
+part 'user_repository_impl.g.dart';
+
+class UserRepositoryImpl {
   static const String _userKey = 'current_user';
 
-  @override
   Future<void> saveUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = json.encode(user.toJson());
     await prefs.setString(_userKey, userJson);
   }
 
-  @override
   Future<UserModel?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString(_userKey);
@@ -25,14 +25,17 @@ class UserRepositoryImpl implements UserRepository {
     return null;
   }
 
-  @override
   Future<void> updateUser(UserModel updatedUser) async {
     await saveUser(updatedUser);
   }
 
-  @override
   Future<void> deleteUser() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userKey);
   }
+}
+
+@riverpod
+UserRepositoryImpl userRepository(UserRepositoryRef ref) {
+  return UserRepositoryImpl();
 }

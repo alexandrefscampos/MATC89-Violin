@@ -7,9 +7,11 @@ part 'user_controller.g.dart';
 
 @riverpod
 class UserController extends _$UserController {
-  final _userService = UserService();
+  late final UserService _userService;
+
   @override
   Future<UserModel?> build() async {
+    _userService = ref.watch(userServiceProvider);
     return _initUser();
   }
 
@@ -42,7 +44,6 @@ class UserController extends _$UserController {
         map[e.collectionId] = e;
       }
       map[album.collectionId] = album;
-
       final updatedUser =
           currentUser.copyWith(totalAlbums: map.values.toList());
       await saveUser(updatedUser);

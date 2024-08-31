@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:violin/models/search_result_model.dart';
-import 'package:violin/repositories/search_repository_impl.dart';
 import 'package:violin/services/search_service.dart';
 
 part 'search_controller.g.dart';
@@ -11,7 +10,7 @@ class SearchController extends _$SearchController {
 
   @override
   FutureOr<SearchResultModel?> build() {
-    _searchService = SearchService(SearchRepositoryImpl());
+    _searchService = ref.watch(searchServiceProvider);
     return null;
   }
 
