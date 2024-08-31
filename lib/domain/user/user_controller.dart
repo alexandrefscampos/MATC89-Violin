@@ -7,13 +7,14 @@ part 'user_controller.g.dart';
 
 @riverpod
 class UserController extends _$UserController {
+  final _userService = UserService();
   @override
   Future<UserModel?> build() async {
     return _initUser();
   }
 
   Future<UserModel?> _initUser() async {
-    UserModel? user = await UserService.getUser();
+    UserModel? user = await _userService.getUser();
     if (user == null) {
       user = UserModel(
         name: 'Alexandre Campos',
@@ -24,7 +25,7 @@ class UserController extends _$UserController {
   }
 
   Future<void> saveUser(UserModel user) async {
-    await UserService.saveUser(user);
+    await _userService.saveUser(user);
     state = AsyncValue.data(user);
   }
 
