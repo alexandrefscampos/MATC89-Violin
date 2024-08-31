@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:violin/core/consts.dart';
 import 'package:violin/data/search_repository_impl.dart';
 import 'package:violin/domain/search/search_result_model.dart';
 import 'package:violin/domain/search/search_service.dart';
-import 'package:violin/mocks/user_mock.dart';
+import 'package:violin/domain/user/user_controller.dart';
 
-class SearchPage extends StatefulWidget {
+final searchServiceProvider =
+    Provider((ref) => SearchService(SearchRepositoryImpl()));
+
+final searchResultsProvider = StateProvider<SearchResultModel?>((ref) => null);
+
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   var selectedFilter = 0;
-  SearchResultModel? test;
-  final searchService = SearchService(SearchRepositoryImpl());
   late TextEditingController controller;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +36,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final searchResults = ref.watch(searchResultsProvider);
+
     return Padding(
       padding: const EdgeInsets.all(defaultPadding),
       child: SingleChildScrollView(
@@ -47,14 +54,14 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(height: 8),
             TextButton(
               onPressed: () async {
-                test = await searchService.search(controller.text);
-
-                setState(() {});
+                final searchService = ref.read(searchServiceProvider);
+                final results = await searchService.search(controller.text);
+                ref.read(searchResultsProvider.notifier).state = results;
               },
               child: const Text('Search'),
             ),
-            if (test != null)
-              ...?test?.results?.map(
+            if (searchResults != null)
+              ...?searchResults.results?.map(
                 (e) => GestureDetector(
                   onTap: () {
                     _showAddAlbum(e);
@@ -113,13 +120,10 @@ class _SearchPageState extends State<SearchPage> {
               const Text('You want to add this album?'),
               TextButton(
                 onPressed: () async {
-                  final map = <int?, Results>{};
-                  for (var e in userMock.totalAlbums) {
-                    map[e.collectionId] = e;
-                  }
-                  map[result.collectionId] = result;
-                  userMock.totalAlbums = map.values.toList();
-                  Navigator.of(context).pop();
+                  final userController =
+                      ref.read(userControllerProvider.notifier);
+                  await userController.addAlbum(result);
+                  if (mounted) Navigator.of(context).pop();
                 },
                 child: const Text('Yes'),
               ),
