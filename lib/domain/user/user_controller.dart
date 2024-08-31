@@ -15,7 +15,9 @@ class UserController extends _$UserController {
   Future<UserModel?> _initUser() async {
     UserModel? user = await UserService.getUser();
     if (user == null) {
-      user = UserModel(name: 'Alexandre Campos');
+      user = UserModel(
+        name: 'Alexandre Campos',
+      );
       await saveUser(user);
     }
     return user;
@@ -31,10 +33,10 @@ class UserController extends _$UserController {
     state = AsyncValue.data(updatedUser);
   }
 
-  Future<void> addAlbum(Results album) async {
+  Future<void> addAlbum(Result album) async {
     final currentUser = state.value;
     if (currentUser != null) {
-      final map = <int?, Results>{};
+      final map = <int?, Result>{};
       for (var e in currentUser.totalAlbums) {
         map[e.collectionId] = e;
       }
