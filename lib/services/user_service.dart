@@ -1,26 +1,33 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:violin/models/user_model.dart';
-import 'package:violin/repositories/user_repository.dart';
 import 'package:violin/repositories/user_repository_impl.dart';
 
-class UserService {
-  final UserRepository _repository;
+part 'user_service.g.dart';
 
-  UserService({UserRepository? repository})
-      : _repository = repository ?? UserRepositoryImpl();
+class UserService {
+  final UserRepositoryImpl repository;
+
+  UserService({required this.repository});
 
   Future<void> saveUser(UserModel user) async {
-    await _repository.saveUser(user);
+    await repository.saveUser(user);
   }
 
   Future<UserModel?> getUser() async {
-    return await _repository.getUser();
+    return await repository.getUser();
   }
 
   Future<void> updateUser(UserModel updatedUser) async {
-    await _repository.updateUser(updatedUser);
+    await repository.updateUser(updatedUser);
   }
 
   Future<void> deleteUser() async {
-    await _repository.deleteUser();
+    await repository.deleteUser();
   }
+}
+
+@riverpod
+UserService userService(UserServiceRef ref) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return UserService(repository: userRepository);
 }
