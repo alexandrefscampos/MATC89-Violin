@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:violin/pages/album_details/album_details_page.dart';
-import 'package:violin/pages/albums/albums_page.dart';
-import 'package:violin/pages/home_page.dart';
+import 'package:violin/widgets/albums/album_details_page.dart';
+import 'package:violin/widgets/albums/albums_page.dart';
+import 'package:violin/widgets/home/home_page.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});

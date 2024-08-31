@@ -4,13 +4,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/core/colors.dart';
-import 'package:violin/core/widgets/album_preview.dart';
-import 'package:violin/domain/user/user_controller.dart';
-import 'package:violin/domain/user/user_model.dart';
-import 'package:violin/pages/albums/albums_page.dart';
-import 'package:violin/pages/profile/widgets/user_statistics.dart';
-import 'package:violin/pages/shared/widgets/album_grid.dart';
+import 'package:violin/models/user_model.dart';
+import 'package:violin/widgets/albums/album_grid.dart';
+import 'package:violin/widgets/albums/album_preview.dart';
+import 'package:violin/widgets/albums/albums_page.dart';
+import 'package:violin/widgets/profile/user_statistics.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({

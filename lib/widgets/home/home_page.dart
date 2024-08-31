@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/core/colors.dart';
-import 'package:violin/domain/user/user_controller.dart';
-import 'package:violin/domain/user/user_model.dart';
 import 'package:violin/mocks/albums_mock.dart';
-import 'package:violin/pages/profile/profile_page.dart' as profile_page;
-import 'package:violin/pages/search/search_page.dart';
+import 'package:violin/models/user_model.dart';
+import 'package:violin/widgets/profile/profile_page.dart' as profile_page;
+import 'package:violin/widgets/search/search_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});

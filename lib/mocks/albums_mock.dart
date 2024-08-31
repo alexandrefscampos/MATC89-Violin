@@ -1,4 +1,4 @@
-import 'package:violin/domain/album/album_model.dart';
+import 'package:violin/models/album_model.dart';
 
 final albumList = [
   AlbumModel(

@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/domain/user/user_model.dart';
-import 'package:violin/domain/user/user_service.dart';
+import 'package:violin/models/search_result_model.dart';
+import 'package:violin/models/user_model.dart';
+import 'package:violin/services/user_service.dart';
 
 part 'user_controller.g.dart';
 
