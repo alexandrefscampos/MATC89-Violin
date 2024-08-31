@@ -1,33 +1,25 @@
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:violin/domain/user/user_model.dart';
+import 'package:violin/domain/user/user_repository.dart';
 
 class UserService {
-  static const String _userKey = 'current_user';
+  final UserRepository _repository;
 
-  static Future<void> saveUser(UserModel user) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = json.encode(user.toJson());
-    await prefs.setString(_userKey, userJson);
+  UserService({UserRepository? repository})
+      : _repository = repository ?? UserRepositoryImpl();
+
+  Future<void> saveUser(UserModel user) async {
+    await _repository.saveUser(user);
   }
 
-  static Future<UserModel?> getUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(_userKey);
-    if (userJson != null) {
-      final userMap = json.decode(userJson) as Map<String, dynamic>;
-      return UserModel.fromJson(userMap);
-    }
-    return null;
+  Future<UserModel?> getUser() async {
+    return await _repository.getUser();
   }
 
-  static Future<void> updateUser(UserModel updatedUser) async {
-    await saveUser(updatedUser);
+  Future<void> updateUser(UserModel updatedUser) async {
+    await _repository.updateUser(updatedUser);
   }
 
-  static Future<void> deleteUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userKey);
+  Future<void> deleteUser() async {
+    await _repository.deleteUser();
   }
 }
