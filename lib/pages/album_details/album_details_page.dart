@@ -29,35 +29,37 @@ class AlbumDetailsPage extends StatelessWidget {
                       width: 130,
                       path: album.artworkUrl100 ?? '',
                     ),
-                    const SizedBox(height: 8),
-                    const Row(
-                      children: [
-                        AlbumStatistic(
-                          icon: Icons.remove_red_eye,
-                          iconColor: Colors.green,
-                          value: 0,
-                        ),
-                        SizedBox(width: 8),
-                        AlbumStatistic(
-                          icon: Icons.heart_broken,
-                          iconColor: Colors.red,
-                          value: 0,
-                        ),
-                        SizedBox(width: 8),
-                        // AlbumStatistic(
-                        //   icon: Icons.list,//TODO ADD WHEN LIST FEATURE DONE
-                        //   iconColor: Colors.blue,
-                        //   value: 0,
-                        // ),
-                      ],
-                    ),
+                    // const SizedBox(height: 8),
+                    // const Row(
+                    //   children: [
+                    //     AlbumStatistic(
+                    //       icon: Icons.remove_red_eye,
+                    //       iconColor: Colors.green,
+                    //       value: 0,
+                    //     ),
+                    //     SizedBox(width: 8),
+                    //     AlbumStatistic(
+                    //       icon: Icons.heart_broken,
+                    //       iconColor: Colors.red,
+                    //       value: 0,
+                    //     ),
+                    //     SizedBox(width: 8),
+                    //     // AlbumStatistic(
+                    //     //   icon: Icons.list,//TODO ADD WHEN LIST FEATURE DONE
+                    //     //   iconColor: Colors.blue,
+                    //     //   value: 0,
+                    //     // ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       label: const Text(
                         'Review or rate',
                         style: TextStyle(color: VColors.primary),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showAlbumInteractionBottomSheet(context);
+                      },
                       style: ButtonStyle(
                         minimumSize: WidgetStateProperty.all(
                           const Size(160, 40),
@@ -87,10 +89,20 @@ class AlbumDetailsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     //TODO create rating
-                    Container(
+                    const SizedBox(
                       height: 200,
                       width: 200,
-                      color: Colors.red,
+                      child: AlbumRatingChart(
+                        ratingCounts: [
+                          100,
+                          80,
+                          60,
+                          40,
+                          20
+                        ], // 5 stars to 1 star
+                        // averageRating: 2.5,
+                        // totalRatings: 300,
+                      ),
                     ),
                   ],
                 ),
@@ -194,6 +206,207 @@ class AlbumStatistic extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class AlbumInteractionBottomSheet extends StatefulWidget {
+  final Function(double) onRatingSelected;
+  final Function(bool) onFavoriteToggled;
+  final Function(bool) onHeardToggled;
+  final bool initiallyFavorited;
+  final bool initiallyHeard;
+
+  const AlbumInteractionBottomSheet({
+    super.key,
+    required this.onRatingSelected,
+    required this.onFavoriteToggled,
+    required this.onHeardToggled,
+    this.initiallyFavorited = false,
+    this.initiallyHeard = false,
+  });
+
+  @override
+  _AlbumInteractionBottomSheetState createState() =>
+      _AlbumInteractionBottomSheetState();
+}
+
+class _AlbumInteractionBottomSheetState
+    extends State<AlbumInteractionBottomSheet> {
+  double _rating = 0;
+  late bool _isFavorited;
+  late bool _isHeard;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorited = widget.initiallyFavorited;
+    _isHeard = widget.initiallyHeard;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Album Interaction',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(5, (index) {
+              return IconButton(
+                icon: Icon(
+                  index < _rating ? Icons.star : Icons.star_border,
+                  color: VColors.secondary,
+                  size: 40,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _rating = index + 1;
+                  });
+                },
+              );
+            }),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      _isFavorited ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isFavorited = !_isFavorited;
+                      });
+                      widget.onFavoriteToggled(_isFavorited);
+                    },
+                  ),
+                  const Text('Favorite'),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      _isHeard ? Icons.headphones : Icons.headphones_outlined,
+                      color: Colors.blue,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isHeard = !_isHeard;
+                      });
+                      widget.onHeardToggled(_isHeard);
+                    },
+                  ),
+                  const Text('Heard'),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            child: const Text('Submit'),
+            onPressed: () {
+              widget.onRatingSelected(_rating);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Usage example:
+void showAlbumInteractionBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return AlbumInteractionBottomSheet(
+        onRatingSelected: (rating) {
+          print('Selected rating: $rating');
+        },
+        onFavoriteToggled: (isFavorited) {
+          print('Album favorited: $isFavorited');
+        },
+        onHeardToggled: (isHeard) {
+          print('Album marked as heard: $isHeard');
+        },
+        initiallyFavorited: false,
+        initiallyHeard: true,
+      );
+    },
+  );
+}
+
+class AlbumRatingChart extends StatelessWidget {
+  final List<int> ratingCounts;
+
+  const AlbumRatingChart({
+    super.key,
+    required this.ratingCounts,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    int maxCount =
+        ratingCounts.reduce((max, element) => max > element ? max : element);
+
+    return Container(
+      color: VColors.secondary.withOpacity(0.05),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: List.generate(5, (index) {
+          final rating = index + 1;
+          final count = ratingCounts[index];
+          return Expanded(
+            child: Column(
+              children: [
+                const Icon(Icons.star, color: VColors.secondary, size: 16),
+                const SizedBox(height: 4),
+                Flexible(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Container(
+                            width: 20,
+                            color: Colors.grey[800],
+                          ),
+                          Container(
+                            width: 20,
+                            height: constraints.maxHeight * (count / maxCount),
+                            color: VColors.secondary,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '$rating',
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 }

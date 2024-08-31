@@ -5,11 +5,11 @@ class AlbumPreview extends StatelessWidget {
   final double height;
   final double width;
   const AlbumPreview({
-    Key? key,
+    super.key,
     required this.path,
     this.height = 120,
     this.width = 90,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
