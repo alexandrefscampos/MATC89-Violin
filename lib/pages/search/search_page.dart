@@ -4,7 +4,7 @@ import 'package:violin/core/consts.dart';
 import 'package:violin/data/search_repository_impl.dart';
 import 'package:violin/domain/search/search_result_model.dart';
 import 'package:violin/domain/search/search_service.dart';
-import 'package:violin/mocks/user_mock.dart';
+import 'package:violin/domain/user/user_controller.dart';
 
 final searchServiceProvider =
     Provider((ref) => SearchService(SearchRepositoryImpl()));
@@ -123,13 +123,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   const Text('You want to add this album?'),
                   TextButton(
                     onPressed: () async {
-                      final map = <int?, Results>{};
-                      for (var e in userMock.totalAlbums) {
-                        map[e.collectionId] = e;
+                      final userController =
+                          ref.read(userControllerProvider.notifier);
+                      await userController.addAlbum(result);
+                      if (mounted) {
+                        Navigator.of(context).pop();
                       }
-                      map[result.collectionId] = result;
-                      userMock.totalAlbums = map.values.toList();
-                      Navigator.of(context).pop();
                     },
                     child: const Text('Yes'),
                   ),
