@@ -398,6 +398,7 @@ class AlbumRatingChart extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
+                //TODO ADD AVERAGE RATING
                 Text(
                   '$rating',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
