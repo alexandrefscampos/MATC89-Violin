@@ -1,5 +1,6 @@
-import 'package:violin/domain/user/user_model.dart';
-import 'package:violin/domain/user/user_repository.dart';
+import 'package:violin/models/user_model.dart';
+import 'package:violin/repositories/user_repository.dart';
+import 'package:violin/repositories/user_repository_impl.dart';
 
 class UserService {
   final UserRepository _repository;

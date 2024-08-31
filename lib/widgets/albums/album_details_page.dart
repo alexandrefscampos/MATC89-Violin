@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/core/consts.dart';
-import 'package:violin/core/widgets/album_preview.dart';
-import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/pages/album_details/widgets/album_interaction_bottomsheet.dart';
-import 'package:violin/pages/album_details/widgets/album_rating_chart.dart';
-import 'package:violin/pages/album_details/widgets/review_card.dart';
+import 'package:violin/models/search_result_model.dart';
+import 'package:violin/widgets/albums/album_interaction_bottomsheet.dart';
+import 'package:violin/widgets/albums/album_preview.dart';
+import 'package:violin/widgets/albums/album_rating_chart.dart';
+import 'package:violin/widgets/profile/review_card.dart';
 
 class AlbumDetailsPage extends StatelessWidget {
   static const routeName = 'album_details';

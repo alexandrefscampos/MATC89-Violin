@@ -1,4 +1,4 @@
-import 'package:violin/domain/search/search_result_model.dart';
+import 'package:violin/models/search_result_model.dart';
 
 class UserModel {
   String? name;

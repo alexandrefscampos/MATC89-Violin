@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:violin/core/consts.dart';
-import 'package:violin/core/widgets/album_preview.dart';
-import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/pages/album_details/album_details_page.dart';
+import 'package:violin/models/search_result_model.dart';
+import 'package:violin/widgets/albums/album_details_page.dart';
+import 'package:violin/widgets/albums/album_preview.dart';
 
 class AlbumGrid extends StatelessWidget {
   final List<Result> albums;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/core/colors.dart';
-import 'package:violin/domain/user/user_controller.dart';
-import 'package:violin/pages/shared/widgets/album_grid.dart';
+import 'package:violin/widgets/albums/album_grid.dart';
 
 class AlbumsPage extends ConsumerWidget {
   static const routeName = 'albums';

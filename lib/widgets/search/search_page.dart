@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:violin/controllers/search_controller.dart';
+import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/core/consts.dart';
-import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/domain/user/user_controller.dart';
-import 'package:violin/pages/search/search_controller.dart';
+import 'package:violin/models/search_result_model.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});

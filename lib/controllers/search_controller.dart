@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:violin/data/search_repository_impl.dart';
-import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/domain/search/search_service.dart';
+import 'package:violin/models/search_result_model.dart';
+import 'package:violin/repositories/search_repository_impl.dart';
+import 'package:violin/services/search_service.dart';
 
 part 'search_controller.g.dart';
 

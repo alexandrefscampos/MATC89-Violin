@@ -1,4 +1,4 @@
-import 'package:violin/data/search_repository_impl.dart';
+import 'package:violin/repositories/search_repository_impl.dart';
 
 class SearchService {
   final SearchRepositoryImpl searchRepositoryImpl;
