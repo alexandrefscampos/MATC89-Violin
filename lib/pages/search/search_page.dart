@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:violin/core/consts.dart';
-import 'package:violin/data/search_repository_impl.dart';
 import 'package:violin/domain/search/search_result_model.dart';
-import 'package:violin/domain/search/search_service.dart';
 import 'package:violin/domain/user/user_controller.dart';
-
-final searchServiceProvider =
-    Provider((ref) => SearchService(SearchRepositoryImpl()));
-
-final searchResultsProvider = StateProvider<SearchResultModel?>((ref) => null);
+import 'package:violin/pages/search/search_controller.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -36,75 +30,86 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final searchResults = ref.watch(searchResultsProvider);
+    final searchResultsAsync = ref.watch(searchControllerProvider);
 
     return Padding(
       padding: const EdgeInsets.all(defaultPadding),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'What are you searching for?',
-              ),
+      child: Column(
+        children: [
+          TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'What are you searching for?',
             ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () async {
-                final searchService = ref.read(searchServiceProvider);
-                final results = await searchService.search(controller.text);
-                ref.read(searchResultsProvider.notifier).state = results;
-              },
-              child: const Text('Search'),
-            ),
-            if (searchResults != null)
-              ...?searchResults.results?.map(
-                (e) => GestureDetector(
-                  onTap: () {
-                    _showAddAlbum(e);
-                  },
-                  child: Container(
-                    color: Colors.transparent,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Image.network(e.artworkUrl100 ?? ''),
-                        const SizedBox(width: 16),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                e.collectionName ?? '',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: () {
+              ref
+                  .read(searchControllerProvider.notifier)
+                  .search(controller.text);
+            },
+            child: const Text('Search'),
+          ),
+          Expanded(
+            child: searchResultsAsync.when(
+              data: (searchResults) {
+                if (searchResults == null || searchResults.results == null) {
+                  return const Center(child: Text('No results found'));
+                }
+                return ListView.builder(
+                  itemCount: searchResults.results!.length,
+                  itemBuilder: (context, index) {
+                    final result = searchResults.results![index];
+                    return GestureDetector(
+                      onTap: () => _showAddAlbum(result),
+                      child: Container(
+                        color: Colors.transparent,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Image.network(result.artworkUrl100 ?? ''),
+                            const SizedBox(width: 16),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    result.collectionName ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    result.artistName ?? '',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                e.artistName ?? '',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-          ],
-        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error: $error')),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  _showAddAlbum(Result result) {
+  void _showAddAlbum(Result result) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
