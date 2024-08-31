@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/core/consts.dart';
 import 'package:violin/core/widgets/album_preview.dart';
-import 'package:violin/mocks/user_mock.dart';
+import 'package:violin/domain/search/search_result_model.dart';
 import 'package:violin/pages/album_details/widgets/album_interaction_bottomsheet.dart';
 import 'package:violin/pages/album_details/widgets/album_rating_chart.dart';
 import 'package:violin/pages/album_details/widgets/review_card.dart';
@@ -14,7 +14,7 @@ class AlbumDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final album = userMock.totalAlbums.first;
+    final album = ModalRoute.of(context)?.settings.arguments as Result;
     return Scaffold(
       backgroundColor: VColors.primary,
       appBar: AppBar(backgroundColor: Colors.transparent),

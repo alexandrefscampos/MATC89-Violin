@@ -104,7 +104,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 
-  _showAddAlbum(Results result) {
+  _showAddAlbum(Result result) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(

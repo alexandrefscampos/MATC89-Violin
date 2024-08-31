@@ -1,15 +1,15 @@
 class SearchResultModel {
   int? resultCount;
-  List<Results>? results;
+  List<Result>? results;
 
   SearchResultModel({this.resultCount, this.results});
 
   SearchResultModel.fromJson(Map<String, dynamic> json) {
     resultCount = json['resultCount'];
     if (json['results'] != null) {
-      results = <Results>[];
+      results = <Result>[];
       json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
+        results!.add(Result.fromJson(v));
       });
     }
   }
@@ -24,7 +24,7 @@ class SearchResultModel {
   }
 }
 
-class Results {
+class Result {
   String? wrapperType;
   String? kind;
   int? artistId;
@@ -60,7 +60,7 @@ class Results {
   String? copyright;
   String? description;
 
-  Results(
+  Result(
       {this.wrapperType,
       this.kind,
       this.artistId,
@@ -96,7 +96,7 @@ class Results {
       this.copyright,
       this.description});
 
-  Results.fromJson(Map<String, dynamic> json) {
+  Result.fromJson(Map<String, dynamic> json) {
     wrapperType = json['wrapperType'];
     kind = json['kind'];
     artistId = json['artistId'];
