@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:violin/pages/album_details/album_details_page.dart';
 import 'package:violin/pages/albums/albums_page.dart';
 import 'package:violin/pages/home_page.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Violin',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),

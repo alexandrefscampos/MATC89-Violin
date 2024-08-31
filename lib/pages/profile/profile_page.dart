@@ -98,24 +98,26 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
-              Text(
-                'User favorite albums', //TODO create fav albums
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+              if (userMock.favoriteAlbums.isNotEmpty) ...[
+                SizedBox(height: 24),
+                Text(
+                  'User favorite albums', //TODO create fav albums
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ...userMock.totalAlbums
-                      .take(3)
-                      .map((e) => AlbumPreview(path: e.artworkUrl100 ?? '')),
-                ],
-              ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ...userMock.totalAlbums
+                        .take(3)
+                        .map((e) => AlbumPreview(path: e.artworkUrl100 ?? '')),
+                  ],
+                ),
+              ],
               SizedBox(height: 32),
               InkWell(
                 onTap: () {
@@ -127,7 +129,7 @@ class ProfilePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'All favorite albums',
+                          'Added albums',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
