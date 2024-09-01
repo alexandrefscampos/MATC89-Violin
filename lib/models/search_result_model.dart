@@ -140,9 +140,9 @@ class Result {
         description = json['description'],
         isFavorite = json['isFavorite'],
         rating = json['rating'],
-        reviews = (json['reviews'] as List<String>?)
-                ?.map((e) => Result.fromJson(e as Map<String, dynamic>))
-                .toList() as List<String>? ??
+        reviews = (json['reviews'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList() ??
             [];
 
   Map<String, dynamic> toJson() {
