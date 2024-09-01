@@ -49,4 +49,6 @@ class UserController extends _$UserController {
       await saveUser(updatedUser);
     }
   }
+
+  bool allowImages() => true;
 }

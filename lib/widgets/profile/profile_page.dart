@@ -1,6 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,58 +17,67 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsyncValue = ref.watch(userControllerProvider);
+    final allowImages = ref.read(userControllerProvider.notifier).allowImages();
 
     return userAsyncValue.when(
-      data: (user) => _buildProfileContent(context, user),
-      loading: () => Center(child: CircularProgressIndicator()),
+      data: (user) => _buildProfileContent(context, user, allowImages),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(child: Text('Error: $error')),
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, UserModel? user) {
+  Widget _buildProfileContent(
+    BuildContext context,
+    UserModel? user,
+    bool allowImages,
+  ) {
     if (user == null) {
-      return Center(child: Text('No user data available'));
+      return const Center(child: Text('No user data available'));
     }
 
     return ListView(
       children: [
         Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 60),
-              child: Image.network(
-                //TODO add banner feature
-                'https://www.univates.br/radio/media/noticias_responsivo/31049/-1645810170.8855_1440_900.jpg',
-                height: 200,
-                width: double.maxFinite,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment(0, 0.8),
-                child: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: CachedNetworkImage(
-                      imageUrl: user.avatarUrl ??
-                          "https://static.vecteezy.com/ti/vetor-gratis/p1/9292244-default-avatar-icon-vector-of-social-media-user-vetor.jpg",
+            allowImages
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 60),
+                    child: Image.network(
+                      //TODO add banner feature
+                      'https://www.univates.br/radio/media/noticias_responsivo/31049/-1645810170.8855_1440_900.jpg',
+                      height: 200,
+                      width: double.maxFinite,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                ),
-              ),
-            )
+                  )
+                : const SizedBox.shrink(),
+            allowImages
+                ? Positioned.fill(
+                    child: Align(
+                      alignment: const Alignment(0, 0.8),
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: CachedNetworkImage(
+                            imageUrl: user.avatarUrl ??
+                                "https://static.vecteezy.com/ti/vetor-gratis/p1/9292244-default-avatar-icon-vector-of-social-media-user-vetor.jpg",
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink()
           ],
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
               Text(
                 user.name ?? 'User',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
@@ -96,7 +102,7 @@ class ProfilePage extends ConsumerWidget {
               //     ),
               //   ],
               // ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -123,8 +129,8 @@ class ProfilePage extends ConsumerWidget {
                 ],
               ),
               if (user.favoriteAlbums.isNotEmpty) ...[
-                SizedBox(height: 24),
-                Text(
+                const SizedBox(height: 24),
+                const Text(
                   'User favorite albums', //TODO create fav albums
                   style: TextStyle(
                     color: Colors.white,
@@ -132,7 +138,7 @@ class ProfilePage extends ConsumerWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Wrap(
                   alignment: WrapAlignment.spaceEvenly,
                   children: [
@@ -142,7 +148,7 @@ class ProfilePage extends ConsumerWidget {
                   ],
                 ),
               ],
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               InkWell(
                 onTap: () {
                   Navigator.of(context).pushNamed(AlbumsPage.routeName);
@@ -152,7 +158,7 @@ class ProfilePage extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Added albums',
                           style: TextStyle(
                             color: Colors.white,
@@ -162,22 +168,22 @@ class ProfilePage extends ConsumerWidget {
                         ),
                         Text(
                           user.totalAlbums.length.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),
                         )
                       ],
                     ),
-                    SizedBox(height: 8),
-                    Divider(
+                    const SizedBox(height: 8),
+                    const Divider(
                       height: 1,
                       color: Colors.grey,
                     )
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               SizedBox(
                 height: 300,
                 child: AlbumGrid(

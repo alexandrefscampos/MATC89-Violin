@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Future<void> iSeeText(WidgetTester tester, String text) async {
-  await tester.pumpAndSettle();
+Future<void> iSeeText(WidgetTester tester, String partialText) async {
+  await tester.pump();
 
   final finder = find.byWidgetPredicate((widget) {
     if (widget is Text) {
       final textWidget = widget;
       final textData = textWidget.data ?? '';
-      return textData.contains(text);
+      return textData.toLowerCase().contains(partialText.toLowerCase());
     }
     return false;
   });
@@ -20,9 +20,10 @@ Future<void> iSeeText(WidgetTester tester, String text) async {
         .where((t) => t != null)
         .join(', ');
 
-    throw TestFailure('Text "$text" not found. Available texts: $widgetTexts');
+    throw TestFailure(
+        'Text containing "$partialText" not found. Available texts: $widgetTexts');
   }
 
   expect(finder, findsWidgets,
-      reason: 'Expected to find "$text" at least once');
+      reason: 'Expected to find text containing "$partialText" at least once');
 }

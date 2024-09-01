@@ -31,6 +31,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final searchResultsAsync = ref.watch(searchControllerProvider);
+    final allowImages = ref.read(userControllerProvider.notifier).allowImages();
 
     return Padding(
       padding: const EdgeInsets.all(defaultPadding),
@@ -70,7 +71,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Image.network(result.artworkUrl100 ?? ''),
+                            allowImages
+                                ? Image.network(result.artworkUrl100 ?? '')
+                                : const SizedBox.shrink(),
                             const SizedBox(width: 16),
                             Flexible(
                               child: Column(
