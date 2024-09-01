@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:violin/core/colors.dart';
+import 'package:violin/models/search_result_model.dart';
 
 class AlbumInteractionBottomSheet extends StatefulWidget {
-  final ValueChanged<double> onRatingSelected;
-  final ValueChanged<bool> onFavoriteToggled;
-  final ValueChanged<bool> onHeardToggled;
+  final Result album;
+  final Function(Result, int, bool) onTap;
   final bool isFavorited;
   final bool isHeard;
 
   const AlbumInteractionBottomSheet({
     super.key,
-    required this.onRatingSelected,
-    required this.onFavoriteToggled,
-    required this.onHeardToggled,
+    required this.onTap,
+    required this.album,
     this.isFavorited = false,
     this.isHeard = false,
   });
@@ -80,7 +79,6 @@ class AlbumInteractionBottomSheetState
                       setState(() {
                         _isFavorited = !_isFavorited;
                       });
-                      widget.onFavoriteToggled(_isFavorited);
                     },
                   ),
                   const Text('Favorite'),
@@ -98,7 +96,6 @@ class AlbumInteractionBottomSheetState
                       setState(() {
                         _isHeard = !_isHeard;
                       });
-                      widget.onHeardToggled(_isHeard);
                     },
                   ),
                   const Text('Heard'),
@@ -110,7 +107,7 @@ class AlbumInteractionBottomSheetState
           ElevatedButton(
             child: const Text('Submit'),
             onPressed: () {
-              widget.onRatingSelected(_rating);
+              widget.onTap.call(widget.album, _rating.toInt(), _isFavorited);
               Navigator.pop(context);
             },
           ),

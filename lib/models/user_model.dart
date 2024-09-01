@@ -8,7 +8,6 @@ class UserModel {
   int lists;
   int reviews;
   String? avatarUrl;
-  List<Result> favoriteAlbums;
   List<Result> totalAlbums;
 
   UserModel({
@@ -19,7 +18,6 @@ class UserModel {
     this.lists = 0,
     this.reviews = 0,
     this.totalAlbums = const [],
-    this.favoriteAlbums = const [],
     this.avatarUrl,
   });
 
@@ -30,10 +28,6 @@ class UserModel {
         totalAlbumsThisYear = json['totalAlbumsThisYear'],
         lists = json['lists'],
         reviews = json['reviews'],
-        favoriteAlbums = (json['favoriteAlbums'] as List<dynamic>?)
-                ?.map((e) => Result.fromJson(e as Map<String, dynamic>))
-                .toList() ??
-            [],
         totalAlbums = (json['totalAlbums'] as List<dynamic>?)
                 ?.map((e) => Result.fromJson(e as Map<String, dynamic>))
                 .toList() ??
@@ -46,7 +40,6 @@ class UserModel {
         'totalAlbumsThisYear': totalAlbumsThisYear,
         'lists': lists,
         'reviews': reviews,
-        'favoriteAlbums': favoriteAlbums.map((e) => e.toJson()).toList(),
         'totalAlbums': totalAlbums.map((e) => e.toJson()).toList(),
       };
 
@@ -57,7 +50,6 @@ class UserModel {
     int? totalAlbumsThisYear,
     int? lists,
     int? reviews,
-    List<Result>? favoriteAlbums,
     List<Result>? totalAlbums,
   }) {
     return UserModel(
@@ -67,7 +59,6 @@ class UserModel {
       totalAlbumsThisYear: totalAlbumsThisYear ?? this.totalAlbumsThisYear,
       lists: lists ?? this.lists,
       reviews: reviews ?? this.reviews,
-      favoriteAlbums: favoriteAlbums ?? this.favoriteAlbums,
       totalAlbums: totalAlbums ?? this.totalAlbums,
     );
   }
