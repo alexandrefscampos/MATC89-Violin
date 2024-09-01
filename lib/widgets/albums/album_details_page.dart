@@ -128,18 +128,19 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
                     ),
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: VColors.secondary.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(8),
+                if (currentRating != null)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: VColors.secondary.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.all(defaultPadding),
+                    child: Text(
+                      'You rated this album: $currentRating stars',
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ),
-                  margin: const EdgeInsets.only(top: 20),
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: Text(
-                    'You rated this album: $currentRating stars',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
                 const SizedBox(height: 32),
                 const Text(
                   'All Reviews',
