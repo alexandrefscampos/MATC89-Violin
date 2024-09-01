@@ -26,6 +26,6 @@ class AlbumPreview extends ConsumerWidget {
               fit: BoxFit.cover,
             ),
           )
-        : const SizedBox.shrink();
+        : Text(path);
   }
 }
