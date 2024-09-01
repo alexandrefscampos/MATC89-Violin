@@ -7,9 +7,11 @@ part 'user_controller.g.dart';
 
 @riverpod
 class UserController extends _$UserController {
-  final _userService = UserService();
+  late final UserService _userService;
   @override
   Future<UserModel?> build() async {
+    _userService = ref.watch(userServiceProvider);
+
     return _initUser();
   }
 
@@ -100,4 +102,6 @@ class UserController extends _$UserController {
       await saveUser(updatedUser);
     }
   }
+
+  bool allowImages() => true;
 }

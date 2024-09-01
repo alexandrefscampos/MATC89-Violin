@@ -20,6 +20,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(userControllerProvider);
+    final allowImages = ref.read(userControllerProvider.notifier).allowImages();
 
     return Scaffold(
       backgroundColor: VColors.primary,
@@ -49,7 +50,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: IndexedStack(
         index: _actualIndex,
         children: [
-          HomeBody(userAsyncValue: userAsyncValue),
+          HomeBody(
+            userAsyncValue: userAsyncValue,
+            allowImages: allowImages,
+          ),
           const SearchPage(),
           const profile_page.ProfilePage(),
         ],
@@ -59,9 +63,14 @@ class _HomePageState extends ConsumerState<HomePage> {
 }
 
 class HomeBody extends StatelessWidget {
+  final bool allowImages;
   final AsyncValue<UserModel?> userAsyncValue;
 
-  const HomeBody({super.key, required this.userAsyncValue});
+  const HomeBody({
+    super.key,
+    required this.userAsyncValue,
+    required this.allowImages,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -98,25 +107,27 @@ class HomeBody extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                height: 100,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: albumList.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      GestureDetector(
-                    child: Card(
-                      child: Image.network(
-                        albumList[index].path,
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
+              allowImages
+                  ? SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: albumList.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            GestureDetector(
+                          child: Card(
+                            child: Image.network(
+                              albumList[index].path,
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : const SizedBox.shrink(),
               const SizedBox(height: 24),
               const Text(
                 'Your albums',
@@ -138,14 +149,16 @@ class HomeBody extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Card(
-                        child: Image.network(
-                          user?.totalAlbums[index].artworkUrl100 ?? '',
-                          fit: BoxFit.contain,
-                          height: 92,
-                          width: 92,
-                        ),
-                      ),
+                      allowImages
+                          ? Card(
+                              child: Image.network(
+                                user?.totalAlbums[index].artworkUrl100 ?? '',
+                                fit: BoxFit.contain,
+                                height: 92,
+                                width: 92,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                       const SizedBox(height: 8),
                       SizedBox(
                         width: 92,

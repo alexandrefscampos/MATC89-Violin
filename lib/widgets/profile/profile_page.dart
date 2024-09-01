@@ -17,15 +17,20 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsyncValue = ref.watch(userControllerProvider);
+    final allowImages = ref.read(userControllerProvider.notifier).allowImages();
 
     return userAsyncValue.when(
-      data: (user) => _buildProfileContent(context, user),
+      data: (user) => _buildProfileContent(context, user, allowImages),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(child: Text('Error: $error')),
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, UserModel? user) {
+  Widget _buildProfileContent(
+    BuildContext context,
+    UserModel? user,
+    bool allowImages,
+  ) {
     if (user == null) {
       return const Center(child: Text('No user data available'));
     }
@@ -34,32 +39,36 @@ class ProfilePage extends ConsumerWidget {
       children: [
         Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 60),
-              child: Image.network(
-                //TODO add banner feature
-                'https://www.univates.br/radio/media/noticias_responsivo/31049/-1645810170.8855_1440_900.jpg',
-                height: 200,
-                width: double.maxFinite,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned.fill(
-              child: Align(
-                alignment: const Alignment(0, 0.8),
-                child: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: CachedNetworkImage(
-                      imageUrl: user.avatarUrl ??
-                          "https://static.vecteezy.com/ti/vetor-gratis/p1/9292244-default-avatar-icon-vector-of-social-media-user-vetor.jpg",
+            allowImages
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 60),
+                    child: Image.network(
+                      //TODO add banner feature
+                      'https://www.univates.br/radio/media/noticias_responsivo/31049/-1645810170.8855_1440_900.jpg',
+                      height: 200,
+                      width: double.maxFinite,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                ),
-              ),
-            )
+                  )
+                : const SizedBox.shrink(),
+            allowImages
+                ? Positioned.fill(
+                    child: Align(
+                      alignment: const Alignment(0, 0.8),
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: CachedNetworkImage(
+                            imageUrl: user.avatarUrl ??
+                                "https://static.vecteezy.com/ti/vetor-gratis/p1/9292244-default-avatar-icon-vector-of-social-media-user-vetor.jpg",
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink()
           ],
         ),
         Padding(
