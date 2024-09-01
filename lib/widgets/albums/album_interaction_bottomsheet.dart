@@ -6,14 +6,14 @@ class AlbumInteractionBottomSheet extends StatefulWidget {
   final Result album;
   final Function(Result, int, bool) onTap;
   final bool isFavorited;
-  final bool isHeard;
+  final int? initialRating;
 
   const AlbumInteractionBottomSheet({
     super.key,
     required this.onTap,
     required this.album,
     this.isFavorited = false,
-    this.isHeard = false,
+    this.initialRating,
   });
 
   @override
@@ -23,15 +23,14 @@ class AlbumInteractionBottomSheet extends StatefulWidget {
 
 class AlbumInteractionBottomSheetState
     extends State<AlbumInteractionBottomSheet> {
-  double _rating = 0;
+  late int _rating;
   late bool _isFavorited;
-  late bool _isHeard;
 
   @override
   void initState() {
     super.initState();
     _isFavorited = widget.isFavorited;
-    _isHeard = widget.isHeard;
+    _rating = widget.initialRating ?? 0;
   }
 
   @override
@@ -64,43 +63,21 @@ class AlbumInteractionBottomSheetState
             }),
           ),
           const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
             children: [
-              Column(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      _isFavorited ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.red,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isFavorited = !_isFavorited;
-                      });
-                    },
-                  ),
-                  const Text('Favorite'),
-                ],
+              IconButton(
+                icon: Icon(
+                  _isFavorited ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.red,
+                  size: 30,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isFavorited = !_isFavorited;
+                  });
+                },
               ),
-              Column(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      _isHeard ? Icons.headphones : Icons.headphones_outlined,
-                      color: Colors.blue,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isHeard = !_isHeard;
-                      });
-                    },
-                  ),
-                  const Text('Heard'),
-                ],
-              ),
+              const Text('Favorite'),
             ],
           ),
           const SizedBox(height: 20),

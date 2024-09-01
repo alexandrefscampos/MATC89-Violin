@@ -38,7 +38,7 @@ class ReviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
-                  width: 250,
+                  width: MediaQuery.of(context).size.width - 180,
                   child: Text(
                     review,
                     maxLines: 5,

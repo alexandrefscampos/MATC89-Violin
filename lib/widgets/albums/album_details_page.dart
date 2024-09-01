@@ -103,14 +103,18 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
                         // ),
                         const SizedBox(height: 16),
                         VButton(
-                          onPressed: () =>
-                              showAlbumInteractionBottomSheet(context, album),
+                          onPressed: () => showAlbumInteractionBottomSheet(
+                            context,
+                            album,
+                            currentRating ?? 0,
+                          ),
                           label: 'Review or rate',
                         ),
                       ],
                     ),
                     const SizedBox(width: 16),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width - 250,
@@ -126,13 +130,11 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
                         ),
                         const SizedBox(height: 16),
                         //TODO create rating
-                        const SizedBox(
+                        SizedBox(
                           height: 200,
-                          width: 200,
-                          child: AlbumRatingChart(
+                          width: MediaQuery.of(context).size.width - 210,
+                          child: const AlbumRatingChart(
                             ratingCounts: [100, 80, 60, 40, 20],
-                            // averageRating: 2.5,
-                            // totalRatings: 300,
                           ),
                         ),
                       ],
@@ -183,7 +185,8 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
     );
   }
 
-  void showAlbumInteractionBottomSheet(BuildContext context, Result album) {
+  void showAlbumInteractionBottomSheet(
+      BuildContext context, Result album, int initialRating) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -194,7 +197,7 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
             await userController.addAlbumRating(album, rating, isFavorited);
           },
           isFavorited: false,
-          isHeard: true,
+          initialRating: initialRating,
         );
       },
     );
