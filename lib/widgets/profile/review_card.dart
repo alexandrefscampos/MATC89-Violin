@@ -3,7 +3,13 @@ import 'package:violin/core/colors.dart';
 import 'package:violin/core/consts.dart';
 
 class ReviewCard extends StatelessWidget {
+  final String review;
+  final VoidCallback onDelete;
+  final String user;
   const ReviewCard({
+    required this.review,
+    required this.onDelete,
+    required this.user,
     super.key,
   });
 
@@ -23,7 +29,7 @@ class ReviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Review by User',
+                  'Review by $user',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.5),
                   ),
@@ -31,16 +37,21 @@ class ReviewCard extends StatelessWidget {
                   //TODO ADD COMMENT A REVIEW
                 ),
                 const SizedBox(height: 8),
-                const SizedBox(
-                  width: 300,
+                SizedBox(
+                  width: 250,
                   child: Text(
-                    reviewMock,
+                    review,
                     maxLines: 5,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(Icons.delete),
             ),
           ],
         ),
@@ -48,6 +59,3 @@ class ReviewCard extends StatelessWidget {
     );
   }
 }
-
-const reviewMock =
-    'It was less than three years ago that Todd Phillips’ mid-budget but mega-successful “Joker” threateningly pointed toward a future in which superhero movies of all sizes would become so endemic to modern cinema that they no longer had to be superhero movies at all. With Matt Reeves’ “The Batman” — a sprawling, 176-minute latex procedural that often appears to have more in common with serial killer sagas like “Se7en” and “Zodiac” than it does anything in the Snyderverse or the MCU — that future has arrived with shuddering force, for better or worse. Mostly better. ';

@@ -1,186 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/core/colors.dart';
 import 'package:violin/core/consts.dart';
 import 'package:violin/models/search_result_model.dart';
 import 'package:violin/widgets/albums/album_interaction_bottomsheet.dart';
 import 'package:violin/widgets/albums/album_preview.dart';
 import 'package:violin/widgets/albums/album_rating_chart.dart';
+import 'package:violin/widgets/albums/review_section.dart';
 import 'package:violin/widgets/profile/review_card.dart';
+import 'package:violin/widgets/shared/v_button.dart';
 
-class AlbumDetailsPage extends StatelessWidget {
+class AlbumDetailsPage extends ConsumerStatefulWidget {
   static const routeName = 'album_details';
 
   const AlbumDetailsPage({super.key});
 
   @override
+  ConsumerState<AlbumDetailsPage> createState() => _AlbumDetailsPageState();
+}
+
+class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
+  @override
   Widget build(BuildContext context) {
     final album = ModalRoute.of(context)?.settings.arguments as Result;
+    final userAsyncValue = ref.watch(userControllerProvider);
     return Scaffold(
       backgroundColor: VColors.primary,
       appBar: AppBar(backgroundColor: Colors.transparent),
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: userAsyncValue.when(
+          error: (_, __) => const SizedBox.shrink(),
+          loading: () => const SizedBox.shrink(),
+          data: (user) {
+            final userController = ref.read(userControllerProvider.notifier);
+
+            final currentRating = user?.totalAlbums
+                .firstWhere(
+                    (element) => element.collectionId == album.collectionId)
+                .rating;
+
+            List<Widget> reviews = user?.totalAlbums
+                    .firstWhere((element) {
+                      return element.collectionId == album.collectionId;
+                    })
+                    .reviews
+                    .map((e) => ReviewCard(
+                          user: user.name ?? '',
+                          review: e,
+                          onDelete: () async {
+                            await userController.deleteAlbumReview(album, e);
+                          },
+                        ))
+                    .toList() ??
+                [];
+
+            return ListView(
               children: [
-                Column(
-                  children: [
-                    AlbumPreview(
-                      height: 200,
-                      width: 130,
-                      path: album.artworkUrl100 ?? '',
-                    ),
-                    // const SizedBox(height: 8),
-                    // const Row(
-                    //   children: [
-                    //     AlbumStatistic(
-                    //       icon: Icons.remove_red_eye,
-                    //       iconColor: Colors.green,
-                    //       value: 0,
-                    //     ),
-                    //     SizedBox(width: 8),
-                    //     AlbumStatistic(
-                    //       icon: Icons.heart_broken,
-                    //       iconColor: Colors.red,
-                    //       value: 0,
-                    //     ),
-                    //     SizedBox(width: 8),
-                    //     // AlbumStatistic(
-                    //     //   icon: Icons.list,//TODO ADD WHEN LIST FEATURE DONE
-                    //     //   iconColor: Colors.blue,
-                    //     //   value: 0,
-                    //     // ),
-                    //   ],
-                    // ),
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      label: const Text(
-                        'Review or rate',
-                        style: TextStyle(color: VColors.primary),
-                      ),
-                      onPressed: () {
-                        showAlbumInteractionBottomSheet(context);
-                      },
-                      style: ButtonStyle(
-                        minimumSize: WidgetStateProperty.all(
-                          const Size(160, 40),
-                        ),
-                        backgroundColor: WidgetStateProperty.all(
-                          VColors.secondary,
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.abc,
-                        color: VColors.primary,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      album.collectionName ?? '',
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    Column(
+                      children: [
+                        AlbumPreview(
+                          height: 200,
+                          width: 130,
+                          path: album.artworkUrl100 ?? '',
+                        ),
+                        // const SizedBox(height: 8),
+                        // const Row(
+                        //   children: [
+                        //     AlbumStatistic(
+                        //       icon: Icons.remove_red_eye,
+                        //       iconColor: Colors.green,
+                        //       value: 0,
+                        //     ),
+                        //     SizedBox(width: 8),
+                        //     AlbumStatistic(
+                        //       icon: Icons.heart_broken,
+                        //       iconColor: Colors.red,
+                        //       value: 0,
+                        //     ),
+                        //     SizedBox(width: 8),
+                        //     // AlbumStatistic(
+                        //     //   icon: Icons.list,//TODO ADD WHEN LIST FEATURE DONE
+                        //     //   iconColor: Colors.blue,
+                        //     //   value: 0,
+                        //     // ),
+                        //   ],
+                        // ),
+                        const SizedBox(height: 16),
+                        VButton(
+                          onPressed: () =>
+                              showAlbumInteractionBottomSheet(context, album),
+                          label: 'Review or rate',
+                        ),
+                      ],
                     ),
-                    Text(
-                      album.artistName ?? '',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(height: 16),
-                    //TODO create rating
-                    const SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: AlbumRatingChart(
-                        ratingCounts: [
-                          100,
-                          80,
-                          60,
-                          40,
-                          20
-                        ], // 5 stars to 1 star
-                        // averageRating: 2.5,
-                        // totalRatings: 300,
-                      ),
+                    const SizedBox(width: 16),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 250,
+                          child: Text(
+                            album.collectionName ?? '',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                        Text(
+                          album.artistName ?? '',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 16),
+                        //TODO create rating
+                        const SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: AlbumRatingChart(
+                            ratingCounts: [100, 80, 60, 40, 20],
+                            // averageRating: 2.5,
+                            // totalRatings: 300,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: VColors.secondary.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Text(
+                    'You rated this album: $currentRating stars',
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                const Text(
+                  'All Reviews',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                ReviewSection(
+                  onReviewSubmitted: (review) async {
+                    final userController =
+                        ref.read(userControllerProvider.notifier);
+                    await userController.addAlbumReview(album, review);
+                  },
+                  reviews: const [],
+                ),
+                reviews.isNotEmpty
+                    ? Column(
+                        children: reviews,
+                      )
+                    : const SizedBox.shrink(),
               ],
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              'All Reviews',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            const Divider(
-              height: 1,
-              color: Colors.grey,
-            ),
-            const SizedBox(height: 24),
-            const ReviewCard(),
-            const SizedBox(height: 24),
-            const ReviewCard(),
-          ],
+            );
+          },
         ),
       ),
     );
   }
-}
 
-class AlbumStatistic extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final int value;
-  const AlbumStatistic({
-    super.key,
-    required this.icon,
-    required this.iconColor,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: iconColor,
-        ),
-        Text(
-          value.toString(),
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.55),
-            fontSize: 10,
-          ),
-        ),
-      ],
+  void showAlbumInteractionBottomSheet(BuildContext context, Result album) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return AlbumInteractionBottomSheet(
+          album: album,
+          onTap: (album, rating, isFavorited) async {
+            final userController = ref.read(userControllerProvider.notifier);
+            await userController.addAlbumRating(album, rating, isFavorited);
+          },
+          isFavorited: false,
+          isHeard: true,
+        );
+      },
     );
   }
 }
 
-// Usage example:
-void showAlbumInteractionBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return AlbumInteractionBottomSheet(
-        onRatingSelected: (rating) {
-          print('Selected rating: $rating');
-        },
-        onFavoriteToggled: (isFavorited) {
-          print('Album favorited: $isFavorited');
-        },
-        onHeardToggled: (isHeard) {
-          print('Album marked as heard: $isHeard');
-        },
-        isFavorited: false,
-        isHeard: true,
-      );
-    },
-  );
-}
+const reviewMock =
+    'It was less than three years ago that Todd Phillips’ mid-budget but mega-successful “Joker” threateningly pointed toward a future in which superhero movies of all sizes would become so endemic to modern cinema that they no longer had to be superhero movies at all. With Matt Reeves’ “The Batman” — a sprawling, 176-minute latex procedural that often appears to have more in common with serial killer sagas like “Se7en” and “Zodiac” than it does anything in the Snyderverse or the MCU — that future has arrived with shuddering force, for better or worse. Mostly better. ';

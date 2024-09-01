@@ -7,11 +7,9 @@ part 'user_controller.g.dart';
 
 @riverpod
 class UserController extends _$UserController {
-  late final UserService _userService;
-
+  final _userService = UserService();
   @override
   Future<UserModel?> build() async {
-    _userService = ref.watch(userServiceProvider);
     return _initUser();
   }
 
@@ -44,8 +42,61 @@ class UserController extends _$UserController {
         map[e.collectionId] = e;
       }
       map[album.collectionId] = album;
+
       final updatedUser =
           currentUser.copyWith(totalAlbums: map.values.toList());
+      await saveUser(updatedUser);
+    }
+  }
+
+  Future<void> addAlbumRating(Result album, int rating, bool isFavorite) async {
+    final currentUser = state.value;
+    if (currentUser != null) {
+      final existingAlbumIndex = currentUser.totalAlbums
+          .indexWhere((e) => e.collectionId == album.collectionId);
+
+      final newTotalAlbums = currentUser.totalAlbums;
+
+      if (existingAlbumIndex != -1) {
+        newTotalAlbums[existingAlbumIndex] =
+            newTotalAlbums[existingAlbumIndex].copyWith(
+          rating: rating,
+          isFavorite: isFavorite,
+        );
+      } else {
+        newTotalAlbums.add(album.copyWith(
+          rating: rating,
+          isFavorite: isFavorite,
+        ));
+      }
+
+      final updatedUser = currentUser.copyWith(totalAlbums: newTotalAlbums);
+      await saveUser(updatedUser);
+    }
+  }
+
+  Future<void> addAlbumReview(Result album, String review) async {
+    final currentUser = state.value;
+    if (currentUser != null) {
+      final newReviews = currentUser.totalAlbums
+        ..firstWhere((e) => e.collectionId == album.collectionId)
+            .reviews
+            .add(review);
+
+      final updatedUser = currentUser.copyWith(totalAlbums: newReviews);
+      await saveUser(updatedUser);
+    }
+  }
+
+  Future<void> deleteAlbumReview(Result album, String review) async {
+    final currentUser = state.value;
+    if (currentUser != null) {
+      final newReviews = currentUser.totalAlbums
+        ..firstWhere((e) => e.collectionId == album.collectionId)
+            .reviews
+            .remove(review);
+
+      final updatedUser = currentUser.copyWith(totalAlbums: newReviews);
       await saveUser(updatedUser);
     }
   }
