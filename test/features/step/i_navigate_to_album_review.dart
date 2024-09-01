@@ -8,7 +8,6 @@ import 'package:violin/models/search_result_model.dart';
 import 'package:violin/models/user_model.dart';
 import 'package:violin/repositories/user_repository_impl.dart';
 import 'package:violin/services/user_service.dart';
-import 'package:violin/widgets/albums/album_preview.dart';
 import 'package:violin/widgets/profile/profile_page.dart' as profile_page;
 
 
