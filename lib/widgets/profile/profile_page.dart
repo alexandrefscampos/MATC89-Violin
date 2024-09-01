@@ -22,7 +22,11 @@ class ProfilePage extends ConsumerWidget {
     return userAsyncValue.when(
       data: (user) => _buildProfileContent(context, user, allowImages),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('Error: $error')),
+      error: (error, stackTrace) => Center(
+          child: Text(
+        'Error: $error',
+        style: const TextStyle(color: Colors.white),
+      )),
     );
   }
 
@@ -131,7 +135,7 @@ class ProfilePage extends ConsumerWidget {
               if (user.totalAlbums.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 const Text(
-                  'User albums', //TODO create fav albums
+                  'Favorite albums',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -143,7 +147,8 @@ class ProfilePage extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ...user.totalAlbums
-                        .take(3)
+                        .where((e) => e.isFavorite ?? false)
+                        .take(4)
                         .map((e) => AlbumPreview(path: e.artworkUrl100 ?? '')),
                   ],
                 ),

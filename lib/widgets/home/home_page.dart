@@ -196,7 +196,11 @@ class HomeBody extends StatelessWidget {
         ),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('Error: $error')),
+      error: (error, stackTrace) => Center(
+          child: Text(
+        'Error: $error',
+        style: const TextStyle(color: Colors.white),
+      )),
     );
   }
 }

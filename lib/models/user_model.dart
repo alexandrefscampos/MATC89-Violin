@@ -31,7 +31,7 @@ class UserModel {
         totalAlbums = (json['totalAlbums'] as List<dynamic>?)
                 ?.map((e) => Result.fromJson(e as Map<String, dynamic>))
                 .toList() ??
-            [];
+            <Result>[];
 
   Map<String, dynamic> toJson() => {
         'name': name,

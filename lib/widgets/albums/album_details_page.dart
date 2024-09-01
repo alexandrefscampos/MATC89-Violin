@@ -27,7 +27,18 @@ class _AlbumDetailsPageState extends ConsumerState<AlbumDetailsPage> {
     final userAsyncValue = ref.watch(userControllerProvider);
     return Scaffold(
       backgroundColor: VColors.primary,
-      appBar: AppBar(backgroundColor: Colors.transparent),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
         child: userAsyncValue.when(
