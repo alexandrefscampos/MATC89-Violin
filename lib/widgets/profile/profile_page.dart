@@ -133,8 +133,8 @@ class ProfilePage extends ConsumerWidget {
                   ),
                 ),
                 SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
                   children: [
                     ...user.totalAlbums
                         .take(3)

@@ -1,14 +1,24 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:violin/app.dart';
 import 'package:violin/controllers/user_controller.dart';
 import 'package:violin/models/search_result_model.dart';
 import 'package:violin/models/user_model.dart';
 import 'package:violin/repositories/user_repository_impl.dart';
 import 'package:violin/services/user_service.dart';
-import 'package:violin/widgets/profile/profile_page.dart';
+
+class MockHttpClient extends Mock implements HttpClient {}
+
+class MockHttpClientRequest extends Mock implements HttpClientRequest {}
+
+class MockHttpClientResponse extends Mock implements HttpClientResponse {}
+
+class MockHttpHeaders extends Mock implements HttpHeaders {}
 
 class MockUserRepository extends Mock implements UserRepositoryImpl {}
 
@@ -21,11 +31,7 @@ class MockUserController extends AutoDisposeAsyncNotifier<UserModel?>
   final UserModel? _user;
 
   @override
-  Future<UserModel?> build() async {
-    // In a real scenario, you might want to use ref here
-    // For the mock, we'll just return the _user
-    return _user;
-  }
+  Future<UserModel?> build() async => _user;
 
   @override
   Future<void> addAlbum(Result album) async {}
@@ -37,6 +43,13 @@ class MockUserController extends AutoDisposeAsyncNotifier<UserModel?>
   Future<void> updateUser(UserModel updatedUser) async {}
 }
 
+class TestHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return MockHttpClient();
+  }
+}
+
 void _registerFallbackValues() {
   registerFallbackValue(Uri());
   registerFallbackValue(UserModel());
@@ -44,10 +57,10 @@ void _registerFallbackValues() {
 
 Future<void> iNavigateToMyProfilePage(WidgetTester tester) async {
   _registerFallbackValues();
+  HttpOverrides.global = TestHttpOverrides();
 
   final mockUserRepository = MockUserRepository();
   final mockUserService = MockUserService();
-
   final mockUser = UserModel(
     name: 'Reynan Paiva',
     totalAlbums: List.generate(10, (index) => Result()),
@@ -63,6 +76,28 @@ Future<void> iNavigateToMyProfilePage(WidgetTester tester) async {
 
   final mockUserController = MockUserController(mockUser);
 
+  final mockHttpClient = MockHttpClient();
+  final mockHttpClientRequest = MockHttpClientRequest();
+  final mockHttpClientResponse = MockHttpClientResponse();
+  final mockHttpHeaders = MockHttpHeaders();
+
+  when(() => mockHttpClient.getUrl(any()))
+      .thenAnswer((_) async => mockHttpClientRequest);
+  when(() => mockHttpClientRequest.headers).thenReturn(mockHttpHeaders);
+  when(() => mockHttpClientRequest.close())
+      .thenAnswer((_) async => mockHttpClientResponse);
+  when(() => mockHttpClientResponse.statusCode).thenReturn(200);
+  when(() => mockHttpClientResponse.contentLength).thenReturn(0);
+  when(() => mockHttpClientResponse.listen(any(), onDone: any(named: 'onDone')))
+      .thenAnswer((Invocation invocation) {
+    final onData =
+        invocation.positionalArguments[0] as void Function(List<int>);
+    final onDone = invocation.namedArguments[#onDone] as void Function();
+    onData(Uint8List(0));
+    onDone();
+    return const Stream<List<int>>.empty().listen((_) {});
+  });
+
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -70,18 +105,9 @@ Future<void> iNavigateToMyProfilePage(WidgetTester tester) async {
         userServiceProvider.overrideWithValue(mockUserService),
         userControllerProvider.overrideWith(() => mockUserController),
       ],
-      child: MaterialApp(
-        home: const ProfilePage(),
-        builder: (context, child) {
-          return child!;
-        },
-      ),
+      child: const MyApp(),
     ),
   );
-
-  // Mock CachedNetworkImage
-  await tester.binding.setSurfaceSize(const Size(400, 800));
-  const CachedNetworkImageProvider('').evict();
 
   await tester.pump();
   await tester.pumpAndSettle();
